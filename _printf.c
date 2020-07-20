@@ -102,12 +102,14 @@ void format_int(va_list list, int *printed)
  * format_string - test string format
  * @list: list of args
  * @printed: pointer to amount of printed chars
+ *@sr: char
  * Return: void
  */
 void format_string(va_list list, int *printed, char sr)
 {
 	char *s;
-	s = va_arg(list, char *);
+
+s = va_arg(list, char *);
 
 	if (s)
 	{
