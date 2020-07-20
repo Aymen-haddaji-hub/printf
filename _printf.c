@@ -9,28 +9,28 @@
 int _printf(const char *format, ...)
 {
 	va_list list;
-	int c = 0, p = 0;
+	int count = 0, printed = 0;
 
 	if (!format)
 		return (-1);
 	va_start(list, format);
-	while (format && format[c])
+	while (format && format[count])
 	{
-		if (format[c] == '%')
+		if (format[count] == '%')
 		{
-			if (format[c + 1] == '\0')
+			if (format[count + 1] == '\0')
 				return (-1);
-			format_values(list, format, &p, &c);
+			format_values(list, format, &printed, &count);
 		}
 		else
 		{
-			_putchar(format[c]);
-			p += 1;
-			c += 1;
+			_putchar(format[count]);
+			printed += 1;
+			count += 1;
 		}
 	}
 	va_end(list);
-	return (p);
+	return (printed);
 }
 /**
  * format_values - format string

@@ -17,5 +17,4 @@ s++;
 _printstring(s);
 s--;
 _putchar(*s);
-
 }
