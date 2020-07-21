@@ -1,15 +1,18 @@
-#ifndef _HOLBERTON_H_
-#define _HOLBERTON_H_
-#include <stdarg.h>
+#ifndef HOLBERTON_H
+#define HOLBERTON_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+int _putchar(char c);
+int print_number(int n);
 int _printf(const char *format, ...);
-int _putchar(const char c);
-int _strlen(const char *s);
-void _puts(const char *str);
-int _numbercount(int n);
-void _printdigit(int n);
-int _tbinoct(unsigned int n, int m, unsigned s);
-void _printstring(char *s);
-void format_int(va_list list, int *printed);
-void format_string(va_list list, int *printed, char sr);
-void format_values(va_list list, const char *format, int *printed, int *count);
+int print_octal(unsigned int n);
+int print_unsig(unsigned int n);
+int print_hexaup(unsigned int n);
+int print_hexalower(unsigned int n);
+int print_bi(unsigned int n);
+int _printstring(char *s);
+int rot13(char *point);
+int print_rev(char *);
+int print_hl(uintptr_t n);
 #endif

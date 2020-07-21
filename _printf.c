@@ -1,130 +1,211 @@
 #include "holberton.h"
 #include <stdarg.h>
+#include <stdint.h>
 /**
- * _printf - Receives the main string and all the necessary parameters to
- * print a formated string
- * @format: A string containing all the desired characters
- * Return: A total count of the characters printed
+ * _formatd - prints depending the format
+ * @c: the format sent by the main
+ * @count: characters printed;
+ * @valist: va_list args
+ * Return: @count the number of characters printed
+ */
+int _formatd(char c, int count, va_list valist)
+{
+	uintptr_t p;
+	void *pi;
+
+
+	switch (c)
+	{
+	case 'p':
+		pi = va_arg(valist, void *);
+		p = (uintptr_t)pi;
+
+		if (pi == NULL)
+		{
+			_printf("(nil)");
+			count += 5;
+		}
+		else
+		{
+			_putchar('0');
+			_putchar('x');
+			count += 2;
+			count += print_hl(p);
+		}
+		break;
+	default:
+		count += 2;
+		_putchar('%');
+		_putchar(c);
+	}
+	return (count);
+}
+
+/**
+ * _formatc - prints depending the format
+ * @c: the format sent by the main
+ * @count: characters printed;
+ * @valist: va_list args
+ * Return: @count the number of characters printed
+ */
+int _formatc(char c, int count, va_list valist)
+{
+	char *s;
+	int i;
+	char si[6] = "(null)";
+
+	switch (c)
+	{
+	case 'R':
+		s = va_arg(valist, char *);
+		if (!s)
+		{
+			for (i = 0; si[i]; i++, count++)
+				_putchar(si[i]);
+		}
+		else
+			count += rot13(s);
+		break;
+	case 'r':
+		s = va_arg(valist, char *);
+		if (!s)
+		{
+			for (i = 0; si[i]; i++, count++)
+				_putchar(si[i]);
+		}
+		else
+			count += print_rev(s);
+		break;
+		default:
+			count = _formatd(c, count, valist);
+	}
+	return (count);
+}
+/**
+ * _formatb - prints depending the format
+ * @c: the format sent by the main
+ * @count: characters printed;
+ * @valist: va_list args
+ * Return: @count the number of characters printed
+ */
+int _formatb(char c, int count, va_list valist)
+{
+	unsigned int k;
+
+	switch (c)
+	{
+		case 'b':
+			k = va_arg(valist, unsigned int);
+
+			count += print_bi(k);
+			break;
+		case 'o':
+			k = va_arg(valist, unsigned int);
+
+			count += print_octal(k);
+			break;
+		case 'x':
+			k = va_arg(valist, unsigned int);
+
+			count += print_hexalower(k);
+			break;
+		case 'X':
+			k = va_arg(valist, unsigned int);
+
+			count += print_hexaup(k);
+			break;
+		case 'u':
+			k = va_arg(valist, unsigned int);
+
+			count += print_unsig(k);
+			break;
+		default:
+			count = _formatc(c, count, valist);
+	}
+	return (count);
+}
+
+
+/**
+ * _format - prints depending the format
+ * @c: the format sent by the main
+ * @count: characters printed;
+ * @valist: va_list args
+ * Return: @count the number of characters printed
+ */
+
+int _format(char c, int count, va_list valist)
+{
+	int j, i;
+	char *s;
+	char si[6] = "(null)";
+
+	switch (c)
+	{
+		case 'c':
+			j = va_arg(valist, int);
+			count += _putchar(j);
+			break;
+		case 's':
+			s = va_arg(valist, char *);
+			if (!s)
+			{
+				for (i = 0; si[i]; i++, count++)
+					_putchar(si[i]);
+			}
+			else
+				count += _printstring(s);
+			break;
+		case '%':
+			count += _putchar('%');
+			break;
+		case 'i':
+		case 'd':
+			j = va_arg(valist, int);
+
+			if (!j)
+			{
+				count++;
+				_putchar('0');
+			} else
+				count += print_number(j);
+			break;
+		default:
+			count = _formatb(c, count, valist);
+	}
+	return (count);
+}
+
+/**
+ * _printf - Fuction that prints to the std output
+ * @format: list of parameters passed
+ * Return: @count the number of characters printed
  */
 int _printf(const char *format, ...)
 {
-	va_list list;
-	int count = 0, printed = 0;
+	int i = 0;
+	int count = 0;
+	va_list valist;
+
+	va_start(valist, format);
 
 	if (!format)
 		return (-1);
-	va_start(list, format);
-	while (format && format[count])
+	for (i = 0; format[i]; i++)
 	{
-		if (format[count] == '%')
+		if (format[i] != '%')
 		{
-			if (format[count + 1] == '\0')
-				return (-1);
-			format_values(list, format, &printed, &count);
+			count++;
+			_putchar(format[i]);
+		}
+		else if (format[i + 1])
+		{
+			i++;
+			count = _format(format[i], count, valist);
 		}
 		else
-		{
-			_putchar(format[count]);
-			printed += 1;
-			count += 1;
-		}
+			return (-1);
 	}
-	va_end(list);
-	return (printed);
-}
-/**
- * format_values - format string
- * @list: list of args
- * @format: format string
- * @printed: number of chars printed
- * @count: count iterator
- * Return: pointer to func that correspond to operator
- */
-void format_values(va_list list, const char *format, int *printed, int *count)
-{
-	int f = 0, tobi = 0, tooc = 0;
-	unsigned int num = 0;
-
-	switch (format[*count + 1])
-	{
-		case '%':
-			_putchar(format[*count + 1]);
-			*printed += 1;
-			break;
-		case 'c':
-			_putchar(va_arg(list, int));
-			*printed += 1;
-			break;
-		case 's':
-			format_string(list, printed, 's');
-			break;
-		case 'd': case 'i':
-				format_int(list, printed);
-				break;
-		case 'b':
-			num = va_arg(list, unsigned int);
-			tobi = _tbinoct(num, 0, 2);
-			*printed  += tobi;
-			break;
-		case 'o':
-			num = va_arg(list, unsigned int);
-			tooc = _tbinoct(num, 0, 8);
-			*printed += tooc;
-			break;
-		case 'r':
-			format_string(list, printed, 'r');
-			break;
-		default:
-			*count += 1;
-			*printed += 1;
-			_putchar('%');
-			f = 1;
-	}
-	if (!f)
-		*count += 2;
-}
-/**
- * format_int - test number formats
- * @list: list of args
- * @printed: pointer to amount of printed chars
- * Return: void
- */
-void format_int(va_list list, int *printed)
-{
-	int num = va_arg(list, int);
-
-	if (num <= 0)
-		*printed += 1;
-	_printdigit(num);
-	*printed += _numbercount(num);
-}
-/**
- * format_string - test string format
- * @list: list of args
- * @printed: pointer to amount of printed chars
- *@sr: char
- * Return: void
- */
-void format_string(va_list list, int *printed, char sr)
-{
-	char *s;
-
-s = va_arg(list, char *);
-
-	if (s)
-	{
-		*printed += _strlen(s);
-		if (sr == 's')
-			_puts(s);
-		else
-			_printstring(s);
-	}
-	else
-	{
-		*printed += _strlen("(null)");
-		if (sr == 's')
-			_puts("(null)");
-		else
-			_printstring("(null)");
-	}
+	va_end(valist);
+	return (count);
 }
