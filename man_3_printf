@@ -1,0 +1,60 @@
+.\" printf man page
+.\"
+.\"
+.TH _PRINTF 3 "17 July 2020" "0.1" "Holberton Students _printf Manuel"
+
+.SH NAME
+.B _printf
+- Alternative formated output conversion.
+.SH SYNOPSIS
+Student project for HolbertonSchool
+.SH DESCRIPTION
+Format and print data.
+Write the formatted arguments to the standard output under the control of the format.
+.SH SYNTAX
+.B _printf
+.br
+_printf format [argument]
+.SH CONVERSION
+.B d, i
+.br
+The int argument is converted to signed decimal notation.  The precision, if any, gives the minimum number of digits that must appear; if the converted value requires fewer digits, it is padded on the left with zeros.
+
+.B c
+.br
+If no l modifier is present, the int argument is converted to an unsigned char, and the resulting character is written.
+
+.B s
+.br
+If no l modifier is present: the const char * argument is expected to be a pointer to an array of character type (pointer to a string).  Characters from the array are written up to (but not including) a terminating null byte ('\0').
+
+.B %
+.br
+A '%' is written.  No argument is converted.  The complete conversion specification is '%%'.
+
+.B b
+.br
+The int argument is converted no binary numbers. The range of this format can go from INT_MIN to INT_MAX on unsigned both.
+
+.B u
+.br
+The int argument is converted to unsigned int.
+
+.B o
+.br
+The unsigned int argument is converted to octal notaion.
+
+.B x X
+.br
+The unsigned int argument is converted to hex notaion when lowercase 'x' is passed on format, the unsigned int argument is converted to hex notaion when uppercase 'X' is passed on format.
+
+.B r
+.br
+The char * argument is reversed and then printed out.
+.SH SEE ALSO
+printf(1), holbertonschool(2), cprogramming(2).
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+.SH ""
+Aymen Haddaji  and Ons Jannet
